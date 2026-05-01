@@ -1,0 +1,14 @@
+{
+  "name": "team-task-management",
+  "version": "1.0.0",
+  "description": "Fullstack Task Management App",
+  "scripts": {
+    "start": "cd backend && node index.js",
+    "build": "cd frontend && npm install && npm run build && cd ../backend && npm install && npx prisma generate",
+    "install-all": "cd backend && npm install && cd ../frontend && npm install",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\""
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
