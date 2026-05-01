@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: team-task-management-backend
+    env: node
+    plan: starter
+    region: oregon
+    branch: main
+    buildCommand: npm install
+    startCommand: npx prisma migrate deploy && node index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "5000"
+      - key: CORS_ORIGIN
+        value: "https://your-frontend-domain.netlify.app"
+      - key: JWT_SECRET
+        value: "replace_with_secure_secret"
+      - key: DATABASE_URL
+        value: "postgres://render:render@your-db-host:5432/task_management"
+
+databases:
+  - name: task-management-db
+    plan: starter
+    region: oregon
+    databaseName: task_management

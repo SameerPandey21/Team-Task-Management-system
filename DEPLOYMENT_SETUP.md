@@ -10,6 +10,10 @@ Your application is now configured for Railway deployment! Here's what was set u
 ✅ **.gitignore** - Git ignore rules
 ✅ **backend/prisma/schema.prisma** - Updated to use PostgreSQL
 ✅ **RAILWAY_DEPLOYMENT.md** - Complete deployment guide
+✅ **Dockerfile** - Container build definition
+✅ **docker-compose.yml** - Local Docker deployment setup
+✅ **.dockerignore** - Docker ignore rules
+✅ **render.yaml** - Render backend and database configuration
 
 ## Quick Start Checklist:
 
@@ -47,6 +51,93 @@ Your application is now configured for Railway deployment! Here's what was set u
    ```
 3. Test locally with PostgreSQL before deploying
 4. Push to GitHub and deploy via Railway
+
+## Docker Deployment
+
+You can deploy this app anywhere Docker is supported.
+
+### Local Docker Run
+
+```bash
+docker compose up --build
+```
+
+### Docker Environment Notes
+
+- App listens on port `5000` inside the container
+- Local mapped port is `3000`
+- `DATABASE_URL` points to the `db` service
+- Replace `JWT_SECRET` in `docker-compose.yml` before production use
+
+## Frontend Deployment on Vercel or Netlify
+
+This project is a full-stack app. Use Vercel or Netlify for the frontend only, and host the backend separately.
+
+### Vercel Setup
+
+1. Create a new Vercel project and connect your GitHub repo.
+2. Use the root `vercel.json` configuration.
+3. Set the project root to the repository root.
+4. Configure environment variables:
+   - `VITE_API_URL=https://your-backend-url/api`
+5. Vercel build command will use `frontend/package.json` and deploy `frontend/dist`.
+
+### Netlify Setup
+
+1. Create a new Netlify site and connect your GitHub repo.
+2. Use `netlify.toml` from the repository root.
+3. Set build command to:
+   ```bash
+   cd frontend && npm install && npm run build
+   ```
+4. Set publish directory to:
+   ```text
+   frontend/dist
+   ```
+5. Configure environment variables:
+   - `VITE_API_URL=https://your-backend-url/api`
+
+### Backend Hosting
+
+Deploy the backend on a separate host such as Railway, Render, Fly.io, or any Docker-capable provider.
+
+- Start command:
+  ```bash
+  cd backend && npx prisma migrate deploy && node index.js
+  ```
+- Environment variables:
+  - `DATABASE_URL`
+  - `JWT_SECRET`
+  - `NODE_ENV=production`
+  - `PORT=5000`
+  - `CORS_ORIGIN=https://your-frontend-domain`
+
+### Render Backend Setup
+
+1. Create a Render account at https://render.com.
+2. Connect your GitHub repository.
+3. Create a new Web Service.
+4. Set the root directory to `backend`.
+5. Use this build command:
+   ```bash
+   npm install
+   ```
+6. Use this start command:
+   ```bash
+   npx prisma migrate deploy && node index.js
+   ```
+7. Add these environment variables in Render:
+   - `DATABASE_URL`
+   - `JWT_SECRET`
+   - `NODE_ENV=production`
+   - `PORT=5000`
+   - `CORS_ORIGIN=https://your-netlify-domain.netlify.app`
+
+### Render PostgreSQL Database
+
+1. In Render, create a new PostgreSQL database.
+2. Copy the generated `DATABASE_URL` into your backend service env vars.
+3. Use the same database URL value for the backend service.
 
 ## Environment Variables You Need to Set:
 
