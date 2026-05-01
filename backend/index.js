@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
+const fs = require('fs');
 
 dotenv.config();
 
@@ -27,10 +28,14 @@ app.use('/api/users', userRoutes);
 
 // Serve frontend in production
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/dist')));
+  const frontendDist = [
+    path.join(__dirname, '../frontend/dist'),
+    path.join(__dirname, 'frontend/dist'),
+  ].find((distPath) => fs.existsSync(distPath)) || path.join(__dirname, '../frontend/dist');
 
+  app.use(express.static(frontendDist));
   app.use((req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
+    res.sendFile(path.join(frontendDist, 'index.html'));
   });
 }
 
